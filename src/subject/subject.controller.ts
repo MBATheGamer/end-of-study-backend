@@ -15,10 +15,20 @@ s
   }
 
   @Get()
-  @HasPermission("view_subjects")
-  public async getAll(@Query("all") all = false, @Query("page") page = 1): Promise<any> {
+  @HasPermission("view_classrooms")
+  public async getAll(
+    @Query("orderBy") orderBy: string,
+    @Query("ordering") ordering: "ASC"| "DESC",
+    @Query("search") search: string,
+    @Query("where") where: string,
+    @Query("all") all = false, 
+    @Query("page") page = 1,
+    @Query("limit") limit = 10
+  ): Promise<any> {
     if (all) return await this.service.find(["classroom", "teacher"]);
-    return await this.service.paginate(page, 30, ["classroom", "teacher"]);
+    if (orderBy && ordering) return await this.service.paginateBySort(orderBy, ordering, page, limit, ["classroom", "teacher"]);
+    if (search && where) return await this.service.paginateBySearch(search, where, page, limit, ["classroom", "teacher"]);
+    return await this.service.paginate(page, limit, ["classroom", "teacher"]);
   }
 
   @Post()

@@ -1,4 +1,4 @@
-export interface PaginateResult {
+export interface PaginateResult<T> {
   data: any[];
   meta: {
     total: number;

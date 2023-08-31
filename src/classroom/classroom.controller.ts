@@ -16,9 +16,19 @@ export class ClassroomController {
 
   @Get()
   @HasPermission("view_classrooms")
-  public async getAll(@Query("all") all = false, @Query("page") page = 1): Promise<any> {
+  public async getAll(
+    @Query("orderBy") orderBy: string,
+    @Query("ordering") ordering: "ASC"| "DESC",
+    @Query("search") search: string,
+    @Query("where") where: string,
+    @Query("all") all = false, 
+    @Query("page") page = 1,
+    @Query("limit") limit = 10
+  ): Promise<any> {
     if (all) return await this.service.find(["department"]);
-    return await this.service.paginate(page, 30, ["department"]);
+    if (orderBy && ordering) return await this.service.paginateBySort(orderBy, ordering, page, limit, ["department"]);
+    if (search && where) return await this.service.paginateBySearch(search, where, page, limit, ["department"]);
+    return await this.service.paginate(page, limit, ["department"]);
   }
 
   @Post()

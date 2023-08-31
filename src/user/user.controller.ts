@@ -23,9 +23,19 @@ export class UserController {
 
   @Get()
   @HasPermission("view_users")
-  public async getAll(@Query("role") role: string, @Query("page") page = 1): Promise<any> {
+  public async getAllBySort(
+    @Query("role") role: string,
+    @Query("orderBy") orderBy: string,
+    @Query("ordering") ordering: "ASC"| "DESC",
+    @Query("search") search: string,
+    @Query("where") where: string,
+    @Query("page") page = 1,
+    @Query("limit") limit = 10
+  ): Promise<any> {
     if (role === "teacher") return await this.userService.findByRole(2, ["role"]);
-    return await this.userService.paginate(page, 30, ["role", "classroom"]);
+    if (orderBy && ordering) return await this.userService.paginateBySort(orderBy, ordering, page, limit, ["role", "classroom"]);
+    if (search && where) return await this.userService.paginateBySearch(search, where, page, limit, ["role", "classroom"]);
+    return await this.userService.paginate(page, limit, ["role", "classroom"]);
   }
 
   @Post()
