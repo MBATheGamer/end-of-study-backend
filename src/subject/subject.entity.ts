@@ -22,11 +22,13 @@ export class Subject {
   @Column({name: "is_on_meet"})
   isOnMeet: boolean;
 
-  @ManyToOne(() => Classroom)
+  @ManyToOne(_ => Classroom)
   @JoinColumn({name: "classroom_id"})
   classroom: Classroom;
 
-  @ManyToOne(() => User)
+  @ManyToOne(_ => User, user => user.subjects, {
+    onDelete: "CASCADE"
+  })
   @JoinColumn({name: "teacher_id"})
   teacher: User;
 }

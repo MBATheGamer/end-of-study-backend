@@ -27,6 +27,10 @@ export abstract class AbstractService<T> {
     }
   }
 
+  public async paginateBy(field: string, page = 1, take = 15, relations = []) {
+
+  }
+
   public async create(data: T): Promise<T> {
     return await this.repository.save(data);
   }

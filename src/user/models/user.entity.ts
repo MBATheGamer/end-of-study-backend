@@ -1,6 +1,6 @@
 import { Exclude } from "class-transformer";
 import { Role } from "../../role/role.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Subject } from "src/subject/subject.entity";
 import { Classroom } from "src/classroom/classroom.entity";
 
@@ -34,11 +34,14 @@ export class User {
   @Column({nullable: true})
   address?: string;
 
-  @ManyToOne(() => Role)
+  @ManyToOne(_ => Role)
   @JoinColumn({name: "role_id"})
   role: Role;
 
-  @ManyToOne(() => Classroom, {nullable: true})
+  @ManyToOne(_ => Classroom, {nullable: true})
   @JoinColumn({name: "classroom_id"})
   classroom?: Classroom;
+
+  @OneToMany(_ => Subject, subject => subject.teacher, {cascade: true})
+  subjects?: Subject[];
 }

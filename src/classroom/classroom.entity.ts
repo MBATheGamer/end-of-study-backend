@@ -12,7 +12,7 @@ export class Classroom {
   @Column({nullable: true})
   description: string;
 
-  @ManyToOne(() => Department)
+  @ManyToOne(_ => Department)
   @JoinColumn({name: "department_id"})
   department: Department;
 }
