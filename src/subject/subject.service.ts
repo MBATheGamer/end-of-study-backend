@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Subject } from './subject.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Like, Repository } from 'typeorm';
 import { AbstractService } from '../common/abstract.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateResult } from 'src/common/paginate-result.interface';
@@ -11,46 +11,53 @@ export class SubjectService extends AbstractService<Subject> {
     super(repository);
   }
   
-  public async paginateBySort(field: string, order: "ASC" | "DESC", page = 1, take = 15, relations = []) {
-    const {data, meta} = await super.paginateBySort(field, order, page, take, relations);
+  public async paginateBySort(field: string, order: "ASC" | "DESC", page = 1, take = 10, relations = []) {
+    const conditions: FindManyOptions<Subject> = {
+      order: {},
+      take: take,
+      skip: (page - 1) * take,
+      relations
+    };
 
-    const classrooms = [];
+    if (field === "classroom") conditions.order = {
+      classroom :{
+        name: order
+      }
+    };
+    else if (field === "teacher") conditions.order = {
+      teacher :{
+        firstName: order
+      }
+    };
+    else conditions["order"][field] = order;
 
-    for (let user of data) {
-      classrooms.push(await this.findOne({
-          where: {
-            id: user.id
-          },
-        }, relations)
-      );
-    }
-
-    return {
-      data: classrooms.map((user) => {
-        const {password, ...data} = user;
-        return data;
-      }),
-      meta: meta
-    }
+    return await this.paginateByCondition(conditions, page, take);
   }
 
-  public async paginateBySearch(keyword: string, field: string, page = 1, take = 15, relations = []): Promise<PaginateResult<Subject>>  {
-    const {data, meta} = await super.paginateBySearch(keyword, field, page, take);
+  public async paginateBySearch(keyword: string, field: string, page = 1, take = 10, relations = []): Promise<PaginateResult<Subject>>  {
+    const conditions: FindManyOptions<Subject> = {
+      where: {},
+      take: take,
+      skip: (page - 1) * take,
+      relations
+    };
 
-    const classrooms: Subject[] = [];
-
-    for (let classroom of data) {
-      classrooms.push(await this.findOne({
-          where: {
-            id: classroom.id
-          },
-        }, relations)
-      );
+    if (field === "classroom") conditions.where = {
+      classroom :{
+        name: Like(`%${keyword}%`)
+      }
+    };
+    else if (field === "teacher") {
+      conditions.where = 
+        {
+          teacher :[
+            { firstName: Like(`%${keyword}%`) },
+            { lastName: Like(`%${keyword}%`) },
+          ],
+      };
     }
+    else conditions["where"][field] = Like(`%${keyword}%`);
 
-    return {
-      data: classrooms,
-      meta: meta
-    }
+    return await this.paginateByCondition(conditions, page, take);
   }
 }

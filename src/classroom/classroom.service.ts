@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Classroom } from './classroom.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Like, Repository } from 'typeorm';
 import { AbstractService } from '../common/abstract.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateResult } from 'src/common/paginate-result.interface';
@@ -11,46 +11,39 @@ export class ClassroomService extends AbstractService<Classroom> {
     super(repository);
   }
   
-  public async paginateBySort(field: string, order: "ASC" | "DESC", page = 1, take = 15, relations = []) {
-    const {data, meta} = await super.paginateBySort(field, order, page, take, relations);
+  public async paginateBySort(field: string, order: "ASC" | "DESC", page = 1, take = 10, relations = []) {
+    const conditions: FindManyOptions<Classroom> = {
+      order: {},
+      take: take,
+      skip: (page - 1) * take,
+      relations
+    };
 
-    const classrooms = [];
+    if (field === "department") conditions.order = {
+      department :{
+        name: order
+      }
+    };
+    else conditions["order"][field] = order;
 
-    for (let user of data) {
-      classrooms.push(await this.findOne({
-          where: {
-            id: user.id
-          },
-        }, relations)
-      );
-    }
-
-    return {
-      data: classrooms.map((user) => {
-        const {password, ...data} = user;
-        return data;
-      }),
-      meta: meta
-    }
+    return await this.paginateByCondition(conditions, page, take);
   }
 
-  public async paginateBySearch(keyword: string, field: string, page = 1, take = 15, relations = []): Promise<PaginateResult<Classroom>>  {
-    const {data, meta} = await super.paginateBySearch(keyword, field, page, take);
+  public async paginateBySearch(keyword: string, field: string, page = 1, take = 10, relations = []): Promise<PaginateResult<Classroom>>  {
+    const conditions: FindManyOptions<Classroom> = {
+      where: {},
+      take: take,
+      skip: (page - 1) * take,
+      relations
+    };
 
-    const classrooms: Classroom[] = [];
+    if (field === "department") conditions.where = {
+      department :{
+        name: Like(`%${keyword}%`)
+      }
+    };
+    else conditions["where"][field] = Like(`%${keyword}%`);
 
-    for (let classroom of data) {
-      classrooms.push(await this.findOne({
-          where: {
-            id: classroom.id
-          },
-        }, relations)
-      );
-    }
-
-    return {
-      data: classrooms,
-      meta: meta
-    }
+    return await this.paginateByCondition(conditions, page, take);
   }
 }

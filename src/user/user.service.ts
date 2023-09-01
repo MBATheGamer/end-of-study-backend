@@ -3,7 +3,8 @@ import { User } from './models/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AbstractService } from '../common/abstract.service';
 import { PaginateResult } from '../common/paginate-result.interface';
-import { Repository } from 'typeorm';
+import { FindManyOptions, FindOptions, FindOptionsOrder, Like, Repository } from 'typeorm';
+import { Role } from 'src/role/role.entity';
 
 @Injectable()
 export class UserService extends AbstractService<User> {
@@ -11,7 +12,7 @@ export class UserService extends AbstractService<User> {
     super(repository);
   }
 
-  public async paginate(page = 1, take = 15, relations = []): Promise<PaginateResult<User>> {
+  public async paginate(page = 1, take = 10, relations = []): Promise<PaginateResult<User>> {
     const {data, meta} = await super.paginate(page, take, relations);
 
     return {
@@ -23,50 +24,40 @@ export class UserService extends AbstractService<User> {
     }
   }
   
-  public async paginateBySort(field: string, order: "ASC" | "DESC", page = 1, take = 15, relations = []) {
-    const {data, meta} = await super.paginateBySort(field, order, page, take, relations);
+  public async paginateBySort(field: string, order: "ASC" | "DESC", page = 1, take = 10, relations = []): Promise<PaginateResult<User>> {
+    const conditions: FindManyOptions<User> = {
+      order: {},
+      take: take,
+      skip: (page - 1) * take,
+      relations
+    };
 
-    const users = [];
+    if (field === "role") conditions.order = {
+      role :{
+        id: order
+      }
+    };
+    else conditions["order"][field] = order;
 
-    for (let user of data) {
-      users.push(await this.findOne({
-          where: {
-            id: user.id
-          },
-        }, relations)
-      )
-    }
-
-    return {
-      data: users.map(user => {
-        const {password, ...data} = user;
-        return data;
-      }),
-      meta: meta
-    }
+    return await this.paginateByCondition(conditions, page, take);
   }
 
-  public async paginateBySearch(keyword: string, field: string, page = 1, take = 15, relations = []): Promise<PaginateResult<User>>  {
-    const {data, meta} = await super.paginateBySearch(keyword, field, page, take);
+  public async paginateBySearch(keyword: string, field: string, page = 1, take = 10, relations = []): Promise<PaginateResult<User>>  {
+    const conditions: FindManyOptions<User> = {
+      where: {},
+      take: take,
+      skip: (page - 1) * take,
+      relations
+    };
 
-    const users: User[] = [];
+    if (field === "role") conditions.where = {
+      role :{
+        name: Like(`%${keyword}%`)
+      }
+    };
+    else conditions["where"][field] = Like(`%${keyword}%`);
 
-    for (let user of data) {
-      users.push(await this.findOne({
-          where: {
-            id: user.id
-          },
-        }, relations)
-      );
-    }
-
-    return {
-      data: users.map((user) => {
-        const {password, ...data} = user;
-        return data;
-      }),
-      meta: meta
-    }
+    return await this.paginateByCondition(conditions, page, take);
   }
 
   public async findByRole(roleId: number, relations = []): Promise<User[]> {

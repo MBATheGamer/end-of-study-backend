@@ -17,17 +17,15 @@ s
   @Get()
   @HasPermission("view_departments")
   public async getAll(
-    @Query("orderBy") orderBy: string,
     @Query("ordering") ordering: "ASC"| "DESC",
     @Query("search") search: string,
-    @Query("where") where: string,
     @Query("all") all = false, 
     @Query("page") page = 1,
     @Query("limit") limit = 10
   ): Promise<any> {
     if (all) return await this.service.find();
-    if (orderBy && ordering) return await this.service.paginateBySort(orderBy, ordering, page, limit);
-    if (search && where) return await this.service.paginateBySearch(search, where, page, limit);
+    if (ordering) return await this.service.paginateBySort(ordering, page, limit);
+    if (search) return await this.service.paginateBySearch(search, page, limit);
     return await this.service.paginate(page, limit);
   }
 

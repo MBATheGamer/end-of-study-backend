@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DeleteResult, FindOneOptions, Like, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, FindManyOptions, FindOneOptions, Like, Repository, UpdateResult } from 'typeorm';
 import { PaginateResult } from './paginate-result.interface';
 
 @Injectable()
@@ -10,7 +10,7 @@ export abstract class AbstractService<T> {
     this.repository = repository;
   }
 
-  public async paginate(page = 1, take = 15, relations = []): Promise<PaginateResult<T>> {
+  public async paginate(page = 1, take = 10, relations = []): Promise<PaginateResult<T>> {
     const [data, total] = await this.repository.findAndCount({
       take: take,
       skip: (page - 1) * take,
@@ -26,32 +26,9 @@ export abstract class AbstractService<T> {
       }
     }
   }
-  public async paginateBySort(field: string, order: "ASC" | "DESC", page = 1, take = 15, relations = []) {
-    const [data, total] = await this.repository.createQueryBuilder()
-      .orderBy(field, order)
-      .skip((page - 1) * take)
-      .take(take)
-      .getManyAndCount();
 
-
-    return {
-      data: data,
-      meta: {
-        total,
-        page,
-        lastPage: Math.ceil(total / take)
-      }
-    }
-  }
-
-  public async paginateBySearch(keyword: string, field: string, page = 1, take = 15) {
-    const [data, total] = await this.repository.createQueryBuilder()
-      .where(`${field} like :keyword`, {
-        keyword: `%${keyword}%`
-      })
-      .skip((page - 1) * take)
-      .take(take)
-      .getManyAndCount();
+  protected async paginateByCondition(conditions: FindManyOptions, page = 1, take = 10) {
+    const [data, total] = await this.repository.findAndCount(conditions);
 
     return {
       data: data,
