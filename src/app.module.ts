@@ -10,6 +10,7 @@ import { ClassroomModule } from './classroom/classroom.module';
 import { SubjectModule } from './subject/subject.module';
 import { PermissionModule } from './permission/permission.module';
 import { UploadModule } from './upload/upload.module';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { UploadModule } from './upload/upload.module';
     SubjectModule,
     PermissionModule,
     UploadModule,
+    PostModule,
   ],
   controllers: [],
   providers: [],
