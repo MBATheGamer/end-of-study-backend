@@ -11,29 +11,31 @@ export class DepartmentService extends AbstractService<Department> {
     super(repository);
   }
 
-  public async paginateBySort(order: "ASC" | "DESC", page = 1, take = 10, relations = []) {
+  
+
+  public async paginate(
+    order: "ASC" | "DESC",
+    keyword = "",
+    page = 1,
+    take = 10,
+    relations = []
+  ): Promise<PaginateResult<Department>> {
     const conditions: FindManyOptions<Department> = {
-      order: {
-        name: order
-      },
+      order: {},
+      where: {},
       take: take,
       skip: (page - 1) * take,
       relations
     };
+
+    if (order) {
+      conditions["order"]["name"] = order;
+    }
+
+    if (keyword) {
+      conditions["where"]["name"] = Like(`${keyword}%`);
+    }
 
     return await this.paginateByCondition(conditions, page, take);
   }
-
-  public async paginateBySearch(keyword: string, page = 1, take = 10, relations = []): Promise<PaginateResult<Department>>  {
-    const conditions: FindManyOptions<Department> = {
-      where: {
-        name: Like(`%${keyword}%`)
-      },
-      take: take,
-      skip: (page - 1) * take,
-      relations
-    };
-
-    return await this.paginateByCondition(conditions, page, take);
-    }
 }

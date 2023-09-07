@@ -33,9 +33,7 @@ export class UserController {
     @Query("limit") limit = 10
   ): Promise<any> {
     if (role === "teacher") return await this.userService.findByRole(2, ["role"]);
-    if (orderBy && ordering) return await this.userService.paginateBySort(orderBy, ordering, page, limit, ["role", "classroom"]);
-    if (search && where) return await this.userService.paginateBySearch(search, where, page, limit, ["role", "classroom"]);
-    return await this.userService.paginate(page, limit, ["role", "classroom"]);
+    return await this.userService.paginate(ordering, orderBy, where, search, page, limit, ["role", "classroom"]);
   }
 
   @Post()

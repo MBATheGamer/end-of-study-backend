@@ -10,23 +10,6 @@ export abstract class AbstractService<T> {
     this.repository = repository;
   }
 
-  public async paginate(page = 1, take = 10, relations = []): Promise<PaginateResult<T>> {
-    const [data, total] = await this.repository.findAndCount({
-      take: take,
-      skip: (page - 1) * take,
-      relations
-    });
-
-    return {
-      data: data,
-      meta: {
-        total,
-        page,
-        lastPage: Math.ceil(total / take)
-      }
-    }
-  }
-
   protected async paginateByCondition(conditions: FindManyOptions, page = 1, take = 10) {
     const [data, total] = await this.repository.findAndCount(conditions);
 

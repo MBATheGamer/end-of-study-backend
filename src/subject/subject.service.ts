@@ -10,44 +10,45 @@ export class SubjectService extends AbstractService<Subject> {
   constructor(@InjectRepository(Subject) repository: Repository<Subject>) {
     super(repository);
   }
-  
-  public async paginateBySort(field: string, order: "ASC" | "DESC", page = 1, take = 10, relations = []) {
+
+  public async paginate(
+    order: "ASC" | "DESC",
+    orderField = "",
+    searchField = "",
+    keyword = "",
+    page = 1,
+    take = 10,
+    relations = []
+  ): Promise<PaginateResult<Subject>> {
     const conditions: FindManyOptions<Subject> = {
       order: {},
-      take: take,
-      skip: (page - 1) * take,
-      relations
-    };
-
-    if (field === "classroom") conditions.order = {
-      classroom :{
-        name: order
-      }
-    };
-    else if (field === "teacher") conditions.order = {
-      teacher :{
-        firstName: order
-      }
-    };
-    else conditions["order"][field] = order;
-
-    return await this.paginateByCondition(conditions, page, take);
-  }
-
-  public async paginateBySearch(keyword: string, field: string, page = 1, take = 10, relations = []): Promise<PaginateResult<Subject>>  {
-    const conditions: FindManyOptions<Subject> = {
       where: {},
       take: take,
       skip: (page - 1) * take,
       relations
     };
 
-    if (field === "classroom") conditions.where = {
+    if (orderField && order) {
+      if (orderField === "classroom") conditions.order = {
+        classroom :{
+          name: order
+        }
+      }
+      else if (orderField === "teacher") conditions.order = {
+        teacher :{
+          firstName: order
+        }
+      }
+      else conditions["order"][orderField] = order;
+    }
+
+    if (searchField && keyword) {
+      if (searchField === "classroom") conditions.where = {
       classroom :{
         name: Like(`%${keyword}%`)
       }
-    };
-    else if (field === "teacher") {
+    }
+    else if (searchField === "teacher") {
       conditions.where = 
         {
           teacher :[
@@ -56,7 +57,8 @@ export class SubjectService extends AbstractService<Subject> {
           ],
       };
     }
-    else conditions["where"][field] = Like(`%${keyword}%`);
+    else conditions["where"][searchField] = Like(`%${keyword}%`);
+    }
 
     return await this.paginateByCondition(conditions, page, take);
   }

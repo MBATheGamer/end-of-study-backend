@@ -26,9 +26,7 @@ s
     @Query("limit") limit = 10
   ): Promise<any> {
     if (all) return await this.service.find(["classroom", "teacher"]);
-    if (orderBy && ordering) return await this.service.paginateBySort(orderBy, ordering, page, limit, ["classroom", "teacher"]);
-    if (search && where) return await this.service.paginateBySearch(search, where, page, limit, ["classroom", "teacher"]);
-    return await this.service.paginate(page, limit, ["classroom", "teacher"]);
+    return await this.service.paginate(ordering, orderBy, where, search, page, limit, ["classroom", "teacher"]);
   }
 
   @Post()

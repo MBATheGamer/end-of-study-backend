@@ -26,9 +26,7 @@ export class ClassroomController {
     @Query("limit") limit = 10
   ): Promise<any> {
     if (all) return await this.service.find(["department"]);
-    if (orderBy && ordering) return await this.service.paginateBySort(orderBy, ordering, page, limit, ["department"]);
-    if (search && where) return await this.service.paginateBySearch(search, where, page, limit, ["department"]);
-    return await this.service.paginate(page, limit, ["department"]);
+    return await this.service.paginate(ordering, orderBy, where, search, page, limit, ["department"]);
   }
 
   @Post()

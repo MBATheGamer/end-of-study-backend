@@ -9,7 +9,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 @Controller('departments')
 export class DepartmentController {
   private readonly service: DepartmentService;
-s
+
   public constructor(service: DepartmentService) {
     this.service = service;
   }
@@ -24,9 +24,7 @@ s
     @Query("limit") limit = 10
   ): Promise<any> {
     if (all) return await this.service.find();
-    if (ordering) return await this.service.paginateBySort(ordering, page, limit);
-    if (search) return await this.service.paginateBySearch(search, page, limit);
-    return await this.service.paginate(page, limit);
+    return await this.service.paginate(ordering, search, page, limit);
   }
 
   @Post()

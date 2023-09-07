@@ -4,7 +4,6 @@ import { SubjectService } from './subject.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Subject } from './subject.entity';
 import { CommonModule } from 'src/common/common.module';
-import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [

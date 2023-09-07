@@ -12,50 +12,40 @@ export class UserService extends AbstractService<User> {
     super(repository);
   }
 
-  public async paginate(page = 1, take = 10, relations = []): Promise<PaginateResult<User>> {
-    const {data, meta} = await super.paginate(page, take, relations);
-
-    return {
-      data: data.map(user => {
-        const {password, ...data} = user;
-        return data;
-      }),
-      meta: meta
-    }
-  }
-  
-  public async paginateBySort(field: string, order: "ASC" | "DESC", page = 1, take = 10, relations = []): Promise<PaginateResult<User>> {
+  public async paginate(
+    order: "ASC" | "DESC",
+    orderField = "",
+    searchField = "",
+    keyword = "",
+    page = 1,
+    take = 10,
+    relations = []
+  ): Promise<PaginateResult<User>> {
     const conditions: FindManyOptions<User> = {
       order: {},
-      take: take,
-      skip: (page - 1) * take,
-      relations
-    };
-
-    if (field === "role") conditions.order = {
-      role :{
-        id: order
-      }
-    };
-    else conditions["order"][field] = order;
-
-    return await this.paginateByCondition(conditions, page, take);
-  }
-
-  public async paginateBySearch(keyword: string, field: string, page = 1, take = 10, relations = []): Promise<PaginateResult<User>>  {
-    const conditions: FindManyOptions<User> = {
       where: {},
       take: take,
       skip: (page - 1) * take,
       relations
     };
 
-    if (field === "role") conditions.where = {
-      role :{
-        name: Like(`%${keyword}%`)
-      }
-    };
-    else conditions["where"][field] = Like(`%${keyword}%`);
+    if (orderField && order) {
+      if (orderField === "role") conditions.order = {
+        role :{
+          id: order
+        }
+      };
+      else conditions["order"][orderField] = order;
+    }
+
+    if (searchField && keyword) {
+      if (searchField === "role") conditions.where = {
+        role :{
+          name: Like(`${keyword}%`)
+        }
+      };
+      else conditions["where"][searchField] = Like(`${keyword}%`);
+    }
 
     return await this.paginateByCondition(conditions, page, take);
   }

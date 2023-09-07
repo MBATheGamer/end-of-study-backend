@@ -10,39 +10,41 @@ export class ClassroomService extends AbstractService<Classroom> {
   constructor(@InjectRepository(Classroom) repository: Repository<Classroom>) {
     super(repository);
   }
-  
-  public async paginateBySort(field: string, order: "ASC" | "DESC", page = 1, take = 10, relations = []) {
+
+  public async paginate(
+    order: "ASC" | "DESC",
+    orderField = "",
+    searchField = "",
+    keyword = "",
+    page = 1,
+    take = 10,
+    relations = []
+  ): Promise<PaginateResult<Classroom>> {
     const conditions: FindManyOptions<Classroom> = {
       order: {},
-      take: take,
-      skip: (page - 1) * take,
-      relations
-    };
-
-    if (field === "department") conditions.order = {
-      department :{
-        name: order
-      }
-    };
-    else conditions["order"][field] = order;
-
-    return await this.paginateByCondition(conditions, page, take);
-  }
-
-  public async paginateBySearch(keyword: string, field: string, page = 1, take = 10, relations = []): Promise<PaginateResult<Classroom>>  {
-    const conditions: FindManyOptions<Classroom> = {
       where: {},
       take: take,
       skip: (page - 1) * take,
       relations
     };
 
-    if (field === "department") conditions.where = {
-      department :{
-        name: Like(`%${keyword}%`)
+    if (orderField && order) {
+      if (orderField === "department") conditions.order = {
+        department :{
+          name: order
+        }
       }
-    };
-    else conditions["where"][field] = Like(`%${keyword}%`);
+      else conditions["order"][orderField] = order;
+    }
+
+    if (searchField && keyword) {
+      if (searchField === "department") conditions.where = {
+        department :{
+          name: Like(`${keyword}%`)
+        }
+      }
+      else conditions["where"][searchField] = Like(`${keyword}%`);
+    }
 
     return await this.paginateByCondition(conditions, page, take);
   }
