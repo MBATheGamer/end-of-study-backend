@@ -1,5 +1,6 @@
+import { Subject } from "src/subject/subject.entity";
 import { File } from "./file.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("posts")
 export class Post {
@@ -7,10 +8,22 @@ export class Post {
   id?: number;
 
   @Column()
-  name: string;
+  title: string;
 
-  @Column()
-  description: string;
+  @Column({type: "longtext"})
+  content: string;
+
+  @Column({name: "created_at"})
+  createdAt: Date;
+
+  @Column({name: "updated_at"})
+  updatedAt: Date;
+
+  @ManyToOne(_ => Subject, subject => subject.posts, {
+    onDelete: "CASCADE"
+  })
+  @JoinColumn({name: "subject_id"})
+  subject: Subject;
 
   @OneToMany(_ => File, file => file.post, {cascade: true})
   files?: File[];

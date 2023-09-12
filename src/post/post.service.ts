@@ -9,4 +9,18 @@ export class PostService extends AbstractService<Post> {
   constructor(@InjectRepository(Post) repository: Repository<Post>) {
     super(repository);
   }
+
+  public async findBySubjectId(subjectId: number, relations = []): Promise<Post[]> {
+    return await this.repository.find({
+      where: {
+        subject: {
+          id: subjectId
+        }
+      },
+      order: {
+        updatedAt: 'desc'
+      },
+      relations: relations
+    });
+  }
 }

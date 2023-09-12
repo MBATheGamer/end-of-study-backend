@@ -11,6 +11,7 @@ import { CommonModule } from 'src/common/common.module';
     CommonModule
   ],
   controllers: [SubjectController],
-  providers: [SubjectService]
+  providers: [SubjectService],
+  exports: [SubjectService]
 })
 export class SubjectModule {}

@@ -1,6 +1,7 @@
 import { User } from "src/user/models/user.entity";
 import { Classroom } from "../classroom/classroom.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Post } from "src/post/post.entity";
 
 @Entity("subjects")
 export class Subject {
@@ -31,4 +32,7 @@ export class Subject {
   })
   @JoinColumn({name: "teacher_id"})
   teacher: User;
+
+  @OneToMany(_ => Post, post => post.subject, {cascade: true})
+  posts?: Post[];
 }
