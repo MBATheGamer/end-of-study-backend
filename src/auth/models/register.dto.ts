@@ -27,6 +27,4 @@ export class RegisterDTO {
   @MinLength(6)
   @MaxLength(16)
   passwordConfirm: string;
-
-  roleId: number;
 }

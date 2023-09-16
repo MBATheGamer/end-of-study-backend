@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AbstractService } from '../common/abstract.service';
 import { Department } from './department.entity';
 import { FindManyOptions, Like, Repository } from 'typeorm';
-import { PaginateResult } from 'src/common/paginate-result.interface';
+import { PaginateResult } from '../common/paginate-result.interface';
 
 @Injectable()
 export class DepartmentService extends AbstractService<Department> {

@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AbstractService } from '../common/abstract.service';
 import { PaginateResult } from '../common/paginate-result.interface';
 import { FindManyOptions, FindOptions, FindOptionsOrder, Like, Repository } from 'typeorm';
-import { Role } from 'src/role/role.entity';
 
 @Injectable()
 export class UserService extends AbstractService<User> {

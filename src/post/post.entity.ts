@@ -1,4 +1,4 @@
-import { Subject } from "src/subject/subject.entity";
+import { Subject } from "../subject/subject.entity";
 import { File } from "./file.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 

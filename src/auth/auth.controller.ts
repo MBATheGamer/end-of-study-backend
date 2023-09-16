@@ -32,7 +32,7 @@ export class AuthController {
       lastName: body["lastName"],
       email: body["email"],
       password: await bcrypt.hash(body["password"], 12),
-      role: {id: body["roleId"]}
+      role: {id: 4}
     });
 
     return {

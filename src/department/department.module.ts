@@ -3,7 +3,7 @@ import { DepartmentController } from './department.controller';
 import { DepartmentService } from './department.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Department } from './department.entity';
-import { CommonModule } from 'src/common/common.module';
+import { CommonModule } from '../common/common.module';
 
 @Module({
   imports: [

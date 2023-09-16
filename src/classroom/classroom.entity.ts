@@ -9,7 +9,7 @@ export class Classroom {
   @Column({unique: true})
   name: string;
 
-  @Column({nullable: true})
+  @Column({nullable: true, type: "longtext"})
   description: string;
 
   @ManyToOne(_ => Department)

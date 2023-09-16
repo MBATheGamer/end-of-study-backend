@@ -6,7 +6,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import * as bcrypt from "bcryptjs";
 import { Request } from 'express';
 import { AuthService } from '../auth/auth.service';
-import { HasPermission } from 'src/permission/has-permission.decorator';
+import { HasPermission } from '../permission/has-permission.decorator';
 import { User } from './models/user.entity';
 
 @UseInterceptors(ClassSerializerInterceptor)

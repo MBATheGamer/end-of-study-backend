@@ -3,7 +3,7 @@ import { Classroom } from './classroom.entity';
 import { FindManyOptions, Like, Repository } from 'typeorm';
 import { AbstractService } from '../common/abstract.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PaginateResult } from 'src/common/paginate-result.interface';
+import { PaginateResult } from '../common/paginate-result.interface';
 
 @Injectable()
 export class ClassroomService extends AbstractService<Classroom> {

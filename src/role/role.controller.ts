@@ -3,8 +3,8 @@ import { DeleteResult } from 'typeorm';
 import { RoleService } from './role.service';
 import { Role } from './role.entity';
 import { Permission } from '../permission/permission.entity';
-import { HasPermission } from 'src/permission/has-permission.decorator';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { HasPermission } from '../permission/has-permission.decorator';
+import { AuthGuard } from '../auth/auth.guard';
 
 @UseGuards(AuthGuard)
 @Controller('roles')

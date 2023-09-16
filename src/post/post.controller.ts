@@ -3,7 +3,7 @@ import { PostService } from './post.service';
 import { DeleteResult } from 'typeorm';
 import { Post as PostEntity } from './post.entity';
 import { File } from './file.entity';
-import { SubjectService } from 'src/subject/subject.service';
+import { SubjectService } from '../subject/subject.service';
 
 @Controller('posts')
 export class PostController {

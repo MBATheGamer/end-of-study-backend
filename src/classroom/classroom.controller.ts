@@ -2,8 +2,8 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } fro
 import { ClassroomService } from './classroom.service';
 import { Classroom } from './classroom.entity';
 import { DeleteResult } from 'typeorm';
-import { HasPermission } from 'src/permission/has-permission.decorator';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { HasPermission } from '../permission/has-permission.decorator';
+import { AuthGuard } from '../auth/auth.guard';
 
 @UseGuards(AuthGuard)
 @Controller('classrooms')

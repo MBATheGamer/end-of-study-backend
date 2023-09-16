@@ -1,7 +1,7 @@
-import { User } from "src/user/models/user.entity";
+import { User } from "../user/models/user.entity";
 import { Classroom } from "../classroom/classroom.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Post } from "src/post/post.entity";
+import { Post } from "../post/post.entity";
 
 @Entity("subjects")
 export class Subject {
@@ -11,7 +11,7 @@ export class Subject {
   @Column()
   name: string;
 
-  @Column({nullable: true})
+  @Column({nullable: true, type: "longtext"})
   description: string;
 
   @Column("decimal", { precision: 2, scale: 1 })

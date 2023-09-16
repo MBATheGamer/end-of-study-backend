@@ -1,8 +1,8 @@
 import { Exclude } from "class-transformer";
 import { Role } from "../../role/role.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
-import { Subject } from "src/subject/subject.entity";
-import { Classroom } from "src/classroom/classroom.entity";
+import { Subject } from "../../subject/subject.entity";
+import { Classroom } from "../../classroom/classroom.entity";
 
 @Entity("users")
 export class User {
