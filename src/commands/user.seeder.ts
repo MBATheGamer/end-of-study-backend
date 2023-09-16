@@ -3,9 +3,6 @@ import { AppModule } from "../app.module";
 import { UserService } from "../user/user.service";
 import { faker } from "@faker-js/faker";
 import * as bcrypt from "bcryptjs";
-import { v4 as uuid } from "uuid";
-import { randomInt } from "crypto";
-
 
 (async () => {
   const app = await NestFactory.createApplicationContext(AppModule);
